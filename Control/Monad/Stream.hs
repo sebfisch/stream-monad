@@ -29,8 +29,8 @@ module Control.Monad.Stream ( Stream, suspended, runStream ) where
 import Control.Monad
 
 -- |
--- Non-Deterministic computations of type @Stream a@ can be enumerated
--- efficiently.
+-- Results of non-deterministic computations of type @Stream a@ can be
+-- enumerated efficiently.
 -- 
 data Stream a = Nil | Single a | Cons a (Stream a) | Susp (Stream a)
 
