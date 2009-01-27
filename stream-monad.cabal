@@ -1,0 +1,30 @@
+Name:          stream-monad
+Version:       0.1
+Cabal-Version: >= 1.6
+Synopsis:      Simple, Fair and Terminating Backtracking Monad
+Description:   This Haskell library provides an implementation of the
+               MonadPlus type class that enumerates results of a
+               non-deterministic computation by interleaving
+               subcomputations in a way that has usually much better
+               memory performance than other strategies with the same
+               termination properties.
+Category:      Control, Monads
+License:       PublicDomain
+License-File:  LICENSE
+Author:        Oleg Kiselyov
+Maintainer:    Sebastian Fischer (sebf@informatik.uni-kiel.de)
+Bug-Reports:   mailto:sebf@informatik.uni-kiel.de
+Homepage:      http://github.com/sebfisch/stream-monad
+Build-Type:    Simple
+Stability:     experimental
+
+Extra-Source-Files: README
+
+Library
+  Build-Depends:    base
+  Exposed-Modules:  Control.Monad.Stream
+  Ghc-Options:      -Wall
+
+Source-Repository head
+  type:     git
+  location: git://github.com/sebfisch/stream-monad.git
