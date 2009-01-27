@@ -73,8 +73,8 @@ instance MonadPlus Stream
 -- calls.
 --
 splus :: Stream a -> Stream a -> Stream a
-Nil       `splus` xs = suspended xs               -- suspending
-Single y  `splus` xs = Cons y xs
-Cons y ys `splus` xs = Cons y (xs `mplus` ys)     -- interleaving
-Susp ys   `splus` xs = suspended (xs `mplus` ys)  -- suspending, using `mplus`
+Nil       `splus` ys = suspended ys               -- suspending
+Single x  `splus` ys = Cons x ys
+Cons x xs `splus` ys = Cons x (ys `mplus` xs)     -- interleaving
+Susp xs   `splus` ys = suspended (ys `mplus` xs)  -- suspending, using `mplus`
 
