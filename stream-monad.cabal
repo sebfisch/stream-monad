@@ -1,5 +1,5 @@
 Name:          stream-monad
-Version:       0.1
+Version:       0.1.1
 Cabal-Version: >= 1.6
 Synopsis:      Simple, Fair and Terminating Backtracking Monad
 Description:   This Haskell library provides an implementation of the
