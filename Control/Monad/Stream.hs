@@ -59,6 +59,8 @@ instance Monad Stream
   Cons x xs >>= f = f x `mplus` suspended (xs >>= f)
   Susp xs   >>= f = suspended (xs >>= f)
 
+  fail _ = Nil
+
 instance MonadPlus Stream
  where
   mzero = Nil
