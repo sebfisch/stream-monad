@@ -1,5 +1,5 @@
 Name:          stream-monad
-Version:       0.1.1
+Version:       0.2
 Cabal-Version: >= 1.6
 Synopsis:      Simple, Fair and Terminating Backtracking Monad
 Description:   This Haskell library provides an implementation of the
@@ -11,7 +11,7 @@ Description:   This Haskell library provides an implementation of the
 Category:      Control, Monads
 License:       PublicDomain
 License-File:  LICENSE
-Author:        Oleg Kiselyov
+Author:        Oleg Kiselyov, Sebastian Fischer
 Maintainer:    Sebastian Fischer (sebf@informatik.uni-kiel.de)
 Bug-Reports:   mailto:sebf@informatik.uni-kiel.de
 Homepage:      http://github.com/sebfisch/stream-monad

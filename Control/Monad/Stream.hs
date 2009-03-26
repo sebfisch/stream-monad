@@ -34,6 +34,13 @@ import Control.Monad
 -- 
 data Stream a = Nil | Single a | Cons a (Stream a) | Susp (Stream a)
 
+instance Functor Stream
+ where
+  fmap _ Nil         = Nil
+  fmap f (Single x)  = Single (f x)
+  fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+  fmap f (Susp xs)   = Susp (fmap f xs)
+
 -- |
 -- Suspensions can be used to ensure fairness.
 -- 
@@ -65,18 +72,32 @@ instance MonadPlus Stream
  where
   mzero = Nil
 
-  Nil       `mplus` ys = suspended ys             -- suspending
-  Single x  `mplus` ys = Cons x ys
-  Cons x xs `mplus` ys = Cons x (ys `mplus` xs)   -- interleaving
-  Susp xs   `mplus` ys = ys `splus` xs            -- using `splus`
+  Nil       `mplus` ys        = suspended ys                -- suspending
+  Single x  `mplus` ys        = Cons x ys
+  Cons x xs `mplus` ys        = Cons x (ys `mplus` xs)      -- interleaving
+  xs        `mplus` Nil       = xs
+  Susp xs   `mplus` Single y  = Cons y xs
+  Susp xs   `mplus` Cons y ys = Cons y (xs `mplus` ys)
+  Susp xs   `mplus` Susp ys   = suspended (xs `mplus` ys)
 
--- The function `splus` is similar to `mplus` but suspends its result
--- if the first argument is a suspension. It uses `mplus` in recursive
--- calls.
---
-splus :: Stream a -> Stream a -> Stream a
-Nil       `splus` ys = suspended ys
-Single x  `splus` ys = Cons x ys
-Cons x xs `splus` ys = Cons x (ys `mplus` xs)
-Susp xs   `splus` ys = suspended (ys `mplus` xs)  -- suspending
+-- |
+-- The class @MonadTimes@ defines an operation to compute the
+-- cartesian product of the results of two monadic operations.  A
+-- sequential default implementation is given in terms of @>>=@ but
+-- specific instances can ovverride this definition to evaluate both
+-- arguments in parallel or interleaved.
+-- 
+class Monad m => MonadTimes m
+ where
+  mtimes :: m a -> m b -> m (a,b)
+  mtimes = liftM2 (,)
 
+instance MonadTimes Stream
+ where
+  Nil       `mtimes` _         = Nil
+  Single x  `mtimes` ys        = fmap (\y -> (x,y)) ys      -- or use liftM ?
+  Cons x xs `mtimes` ys        = fmap (\y -> (x,y)) ys `mplus` (xs `mtimes` ys)
+  _         `mtimes` Nil       = Nil
+  Susp xs   `mtimes` Single y  = fmap (\x -> (x,y)) xs
+  Susp xs   `mtimes` Cons y ys = fmap (\x -> (x,y)) xs `mplus` (xs `mtimes` ys)
+  Susp xs   `mtimes` Susp ys   = suspended (xs `mtimes` ys)
