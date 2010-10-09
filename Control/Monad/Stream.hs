@@ -1,7 +1,7 @@
 -- |
 -- Module      : Control.Monad.Stream
--- Copyright   : Oleg Kiselyov
--- License     : PublicDomain
+-- Copyright   : Oleg Kiselyov, Sebastian Fischer
+-- License     : BSD3
 -- 
 -- Maintainer  : Sebastian Fischer (sebf@informatik.uni-kiel.de)
 -- Stability   : experimental
@@ -27,6 +27,7 @@
 module Control.Monad.Stream ( Stream, suspended, runStream ) where
 
 import Control.Monad
+import Control.Applicative
 
 -- |
 -- Results of non-deterministic computations of type @Stream a@ can be
@@ -80,24 +81,14 @@ instance MonadPlus Stream
   Susp xs   `mplus` Cons y ys = Cons y (xs `mplus` ys)
   Susp xs   `mplus` Susp ys   = suspended (xs `mplus` ys)
 
--- |
--- The class @MonadTimes@ defines an operation to compute the
--- cartesian product of the results of two monadic operations.  A
--- sequential default implementation is given in terms of @>>=@ but
--- specific instances can ovverride this definition to evaluate both
--- arguments in parallel or interleaved.
--- 
-class Monad m => MonadTimes m
- where
-  mtimes :: m a -> m b -> m (a,b)
-  mtimes = liftM2 (,)
+instance Applicative Stream where
+  pure  = Single
 
-instance MonadTimes Stream
- where
-  Nil       `mtimes` _         = Nil
-  Single x  `mtimes` ys        = fmap (\y -> (x,y)) ys      -- or use liftM ?
-  Cons x xs `mtimes` ys        = fmap (\y -> (x,y)) ys `mplus` (xs `mtimes` ys)
-  _         `mtimes` Nil       = Nil
-  Susp xs   `mtimes` Single y  = fmap (\x -> (x,y)) xs
-  Susp xs   `mtimes` Cons y ys = fmap (\x -> (x,y)) xs `mplus` (xs `mtimes` ys)
-  Susp xs   `mtimes` Susp ys   = suspended (xs `mtimes` ys)
+  Nil       <*> _  = Nil
+  Single f  <*> xs = fmap f xs
+  Cons f fs <*> xs = fmap f xs <|> (xs <**> fs)
+  Susp fs   <*> xs = suspended (xs <**> fs)
+
+instance Alternative Stream where
+  empty = Nil
+  (<|>) = mplus
