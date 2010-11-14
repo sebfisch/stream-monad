@@ -99,22 +99,19 @@ instance Alternative Stream where
   (<|>) = mplus
 
 instance MonadLogic Stream where
-   (>>-) = (>>=)
+   (>>-)      = (>>=)
    interleave = mplus
 
-   msplit Nil = return Nothing
-   msplit (Single a) = return $ Just (a, Nil)
-   msplit (Cons a r) = return $ Just (a, suspended r)
-   msplit (Susp i) = suspended $ msplit i
+   msplit Nil         = return Nothing
+   msplit (Single x)  = return $ Just (x, Nil)
+   msplit (Cons x xs) = return $ Just (x, suspended xs)
+   msplit (Susp xs)   = suspended $ msplit xs
 
 instance Foldable Stream where
-  foldMap _ Nil = mempty
-  foldMap f (Single a) = f a
-  foldMap f (Cons a r) = f a `mappend` foldMap f r
-  foldMap f (Susp i) = foldMap f i
+  foldMap = foldMapDefault
 
 instance Traversable Stream where
-  traverse _ Nil = pure Nil
-  traverse f (Single a) = Single <$> f a
-  traverse f (Cons a r) = Cons <$> f a <*> traverse f r
-  traverse f (Susp i) = Susp <$> traverse f i
+  traverse _ Nil         = pure Nil
+  traverse f (Single x)  = Single <$> f x
+  traverse f (Cons x xs) = Cons <$> f x <*> traverse f xs
+  traverse f (Susp xs)   = Susp <$> traverse f xs
