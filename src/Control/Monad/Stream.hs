@@ -30,7 +30,6 @@ import Control.Monad
 import Control.Applicative
 import Control.Monad.Logic
 import Data.Foldable
-import Data.Monoid
 import Data.Traversable
 import Prelude hiding (foldr)
 
