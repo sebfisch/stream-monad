@@ -102,39 +102,10 @@ instance MonadLogic Stream where
    (>>-) = (>>=)
    interleave = mplus
 
-   -- |
-   -- The function @msplit@ splits a non-empty stream into a head and tail.
-   --
    msplit Nil = return Nothing
    msplit (Single a) = return $ Just (a, Nil)
-   msplit (Cons a r) = return $ Just (a, r)
-   msplit (Susp i) = msplit i
-
-   -- | 
-   -- The function @ifte t th el@ is the logical conditional operator,
-   -- equivalent to Prolog's "soft-cut". First the computation @t@ is
-   -- executed. If it succeeds with at least one result, the entire
-   -- @ifte@ computation is equivalent to @t >>= th@. Otherwise, the
-   -- entire computation becomes equivalent to @el@.
-   --
-   ifte t th el = do 
-     s <- msplit t
-     case s of
-       Nothing -> el
-       Just (a, r) -> th a `mplus` (r >>= th)
-
-   -- | 
-   -- The function @once@ selects one solution out of possibly
-   -- many. It greatly improves efficiency as it can be used to avoid
-   -- useless backtracking and therefore to dispose of data structures
-   -- that hold information needed for backtracking (e.g., choice
-   -- points).
-   --
-   once m = do
-     s <- msplit m
-     case s of
-       Nothing -> mzero
-       Just (a, _) -> return a
+   msplit (Cons a r) = return $ Just (a, suspended r)
+   msplit (Susp i) = suspended $ msplit i
 
 instance Foldable Stream where
   foldMap _ Nil = mempty
