@@ -21,7 +21,8 @@ Stability:     experimental
 Extra-Source-Files: README
 
 Library
-  Build-Depends:    base >= 3 && < 5
+  Build-Depends:    base >= 3 && < 5,
+                    logict
   Exposed-Modules:  Control.Monad.Stream
   Ghc-Options:      -Wall
 
