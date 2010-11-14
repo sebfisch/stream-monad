@@ -57,10 +57,8 @@ suspended = Susp
 -- non-deterministic computation.
 -- 
 runStream :: Stream a -> [a]
-runStream Nil         = []
-runStream (Single x)  = [x]
-runStream (Cons x xs) = x : runStream xs
-runStream (Susp xs)   = runStream xs
+runStream = toList
+{-# DEPRECATED runStream "use Data.Foldable.toList" #-}
 
 instance Monad Stream
  where
