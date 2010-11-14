@@ -25,10 +25,11 @@
 -- according to the monad laws may change the order of the results.
 -- 
 module Control.Monad.Stream ( Stream, suspended, runStream, 
-                              runL, ifte, once, cut ) where
+                              runL, msplit, ifte, once, cut ) where
 
 import Control.Monad
 import Control.Applicative
+import Prelude hiding (head, tail)
 
 -- |
 -- Results of non-deterministic computations of type @Stream a@ can be
@@ -59,6 +60,9 @@ runStream (Single x)  = [x]
 runStream (Cons x xs) = x : runStream xs
 runStream (Susp xs)   = runStream xs
 
+-- |
+-- The function @msplit@ splits a non-empty stream into a head and tail.
+--
 msplit :: Stream a -> Maybe (a, Stream a)
 msplit Nil = Nothing
 msplit (Single a) = Just (a, Nil)
