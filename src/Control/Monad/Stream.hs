@@ -24,7 +24,7 @@
 -- are interpreted as a multiset, i.e., a valid transformation
 -- according to the monad laws may change the order of the results.
 -- 
-module Control.Monad.Stream ( Stream, suspended, runStream ) where
+module Control.Monad.Stream ( Stream, suspended, runStream, toList ) where
 
 import Control.Monad
 import Control.Applicative
@@ -58,7 +58,7 @@ suspended = Susp
 -- 
 runStream :: Stream a -> [a]
 runStream = toList
-{-# DEPRECATED runStream "use Data.Foldable.toList" #-}
+{-# DEPRECATED runStream "use toList" #-}
 
 instance Monad Stream
  where

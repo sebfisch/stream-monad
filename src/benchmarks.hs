@@ -4,8 +4,8 @@ import Control.Monad.Stream
 
 main :: IO ()
 main = defaultMain
-  [ bench "permsort" $ nf (runStream . permSort) ([1..4]++[8,7..5]),
-    bench "8 queens" $ nf (runStream . nQueens) 8 ]
+  [ bench "permsort" $ nf (toList . permSort) ([1..4]++[8,7..5]),
+    bench "8 queens" $ nf (toList . nQueens) 8 ]
 
 permSort :: [Int] -> Stream [Int]
 permSort xs = do ys <- permute xs
