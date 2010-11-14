@@ -29,6 +29,10 @@ module Control.Monad.Stream ( Stream, suspended, runStream ) where
 import Control.Monad
 import Control.Applicative
 import Control.Monad.Logic
+import Data.Foldable
+import Data.Monoid
+import Data.Traversable
+import Prelude hiding (foldr)
 
 -- |
 -- Results of non-deterministic computations of type @Stream a@ can be
@@ -131,3 +135,15 @@ instance MonadLogic Stream where
      case s of
        Nothing -> mzero
        Just (a, _) -> return a
+
+instance Foldable Stream where
+  foldMap _ Nil = mempty
+  foldMap f (Single a) = f a
+  foldMap f (Cons a r) = f a `mappend` foldMap f r
+  foldMap f (Susp i) = foldMap f i
+
+instance Traversable Stream where
+  traverse _ Nil = pure Nil
+  traverse f (Single a) = Single <$> f a
+  traverse f (Cons a r) = Cons <$> f a <*> traverse f r
+  traverse f (Susp i) = Susp <$> traverse f i
