@@ -35,8 +35,8 @@ Executable stream-monad-benchmarks
   Main-Is:          benchmarks.hs
   If flag(Benchmarks)
     Build-Depends:  base >= 3 && < 5,
-                    logict >= 0.4 && < 0.5,
-                    criterion >= 0.5 && < 0.6
+                    logict >= 0.4 && < 0.6,
+                    criterion >= 0.5 && < 0.7
   Else
     Buildable:      False
   HS-Source-Dirs:   src
