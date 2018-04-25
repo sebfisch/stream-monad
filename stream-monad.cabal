@@ -1,5 +1,5 @@
 Name:          stream-monad
-Version:       0.4.0.2
+Version:       0.5.0.0
 Cabal-Version: >= 1.6
 Synopsis:      Simple, Fair and Terminating Backtracking Monad
 Description:   This Haskell library provides an implementation of the
@@ -21,8 +21,8 @@ Stability:     experimental
 Extra-Source-Files: README
 
 Library
-  Build-Depends:    base >= 3 && < 5,
-                    logict >= 0.4 && < 0.6
+  Build-Depends:    base >= 3 && < 5
+                  , logict >= 0.4
   HS-Source-Dirs:   src
   Exposed-Modules:  Control.Monad.Stream
   Ghc-Options:      -Wall
@@ -34,9 +34,9 @@ Flag Benchmarks
 Executable stream-monad-benchmarks
   Main-Is:          benchmarks.hs
   If flag(Benchmarks)
-    Build-Depends:  base >= 3 && < 5,
-                    logict >= 0.4 && < 0.6,
-                    criterion >= 0.5 && < 0.7
+    Build-Depends:  base >= 3 && < 5
+                  , logict > 0.6
+                  , criterion >= 0.5
   Else
     Buildable:      False
   HS-Source-Dirs:   src
